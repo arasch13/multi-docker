@@ -1,0 +1,33 @@
+language: generic 
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t arasch13/docker-complex-react -f ./client/Dockerfile.dev.test .
+
+script:
+  - docker run -e CI=true arasch13/docker-complex-react npm run test
+
+after_success:
+  - docker build -t arasch13/multi-container-client ./client
+  - docker build -t arasch13/multi-container-nginx ./nginx
+  - docker build -t arasch13/multi-container-server ./server
+  - docker build -t arasch13/multi-container-worker ./worker
+  - docker login -u="$DOCKER_ID" -p="$DOCKER_PASSWORD"
+  - docker push arasch13/multi-container-client
+  - docker push arasch13/multi-container-nginx
+  - docker push arasch13/multi-container-server
+  - docker push arasch13/multi-container-worker
+
+# deploy:
+#   provider: elasticbeanstalk
+#   region: "us-east-2"
+#   app: docker-complex-react
+#   env: "Dockercomplexreact-env"
+#   bucket_name: "elasticbeanstalk-us-east-2-195944197309"
+#   bucket_path: "docker-react"
+#   on:
+#     branch: master
+#   access_key_id: $AWS_ACCESS_KEY
+#   secret_access_key: $AWS_SECRET_KEY

@@ -4,6 +4,7 @@ COPY ./package.json ./
 # prevent React bug ESLint missing mkdir rights
 RUN mkdir -p /app/node_modules
 RUN chown node:node /app/node_modules
+
 RUN npm install
 COPY . .
 CMD ["npm", "run", "start"]

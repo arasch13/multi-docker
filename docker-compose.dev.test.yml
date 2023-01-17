@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+
+  client:
+    build: 
+      dockerfile: Dockerfile.dev.test
+      context: ./client
+    command: ["npm", "run", "test"]
